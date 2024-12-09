@@ -5,7 +5,7 @@ metadata:
   namespace: argocd
 spec:
   server:
-    replicas: 3
+    replicas: 3               # Enable HA for ArgoCD Server
     resources:
       limits:
         cpu: "500m"
@@ -13,8 +13,9 @@ spec:
       requests:
         cpu: "250m"
         memory: "256Mi"
+
   repo:
-    replicas: 2
+    replicas: 2               # Repository Server HA
     resources:
       limits:
         cpu: "500m"
@@ -22,8 +23,9 @@ spec:
       requests:
         cpu: "250m"
         memory: "256Mi"
-  controller:
-    replicas: 3
+
+  applicationController:
+    replicas: 3               # Application Controller HA
     resources:
       limits:
         cpu: "500m"
@@ -31,8 +33,17 @@ spec:
       requests:
         cpu: "250m"
         memory: "256Mi"
+
   redis:
-    ha:
-      enabled: true
+    standalone:
+      size: 3                 # Redis HA - adjust size for replicas
+      resources:
+        limits:
+          cpu: "500m"
+          memory: "512Mi"
+        requests:
+          cpu: "250m"
+          memory: "256Mi"
+
   rbac:
-    policy: "local"
+    policy: "local"           # Enable RBAC security
