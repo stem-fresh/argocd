@@ -27,7 +27,7 @@ spec:
         cpu: "250m"
         memory: "256Mi"
 
-  controller:
+  applicationController:
     replicas: 3
     resources:
       limits:
@@ -48,9 +48,3 @@ spec:
 
   rbac:
     policy: "local"
-
-  resourceCustomizations: |
-    argoproj.io/Application:
-      ignoreDifferences: |
-        jsonPointers:
-        - /status
