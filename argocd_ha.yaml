@@ -1,11 +1,11 @@
-apiVersion: argoproj.io/v1alpha1  # Use the correct API version supported by your ArgoCD
+apiVersion: argoproj.io/v1beta1
 kind: ArgoCD
 metadata:
   name: argocd
   namespace: argocd
 spec:
   server:
-    replicas: 3               # Enable HA for ArgoCD Server
+    replicas: 3
     resources:
       limits:
         cpu: "500m"
@@ -15,7 +15,7 @@ spec:
         memory: "256Mi"
 
   repo:
-    replicas: 2               # Enable HA for Repository Server
+    replicas: 2
     resources:
       limits:
         cpu: "500m"
@@ -24,8 +24,8 @@ spec:
         cpu: "250m"
         memory: "256Mi"
 
-  applicationController:
-    replicas: 3               # Enable HA for Application Controller
+  controller:
+    replicas: 3
     resources:
       limits:
         cpu: "500m"
@@ -35,8 +35,8 @@ spec:
         memory: "256Mi"
 
   redis:
-    ha:
-      enabled: true           # Enable Redis HA
+    replicas: 3
+    resourcePolicy: "keep"  # Ensure Redis pods aren't terminated on deletion
 
   rbac:
-    policy: "local"           # Enable RBAC
+    enabled: true  # Enable RBAC for security
