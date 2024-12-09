@@ -1,15 +1,11 @@
-apiVersion: argoproj.io/v1alpha1
+apiVersion: argoproj.io/v1beta1
 kind: ArgoCD
 metadata:
   name: argocd
   namespace: argocd
 spec:
   server:
-    replicas: 3               # ArgoCD server HA
-    autoscale:
-      enabled: true           # Enable autoscaling
-      minReplicas: 3
-      maxReplicas: 5
+    replicas: 3                # Enables HA for ArgoCD Server
     resources:
       limits:
         cpu: "500m"
@@ -17,8 +13,9 @@ spec:
       requests:
         cpu: "250m"
         memory: "256Mi"
+
   repo:
-    replicas: 2               # Repository server HA
+    replicas: 2                # Enables HA for Repository Server
     resources:
       limits:
         cpu: "500m"
@@ -26,14 +23,9 @@ spec:
       requests:
         cpu: "250m"
         memory: "256Mi"
-  applicationController:
-    replicas: 3               # Application Controller HA
-    volumeClaimTemplate:
-      spec:
-        accessModes: ["ReadWriteOnce"]
-        resources:
-          requests:
-            storage: 10Gi
+
+  controller:
+    replicas: 3                # Enables HA for Application Controller
     resources:
       limits:
         cpu: "500m"
@@ -41,18 +33,16 @@ spec:
       requests:
         cpu: "250m"
         memory: "256Mi"
+
   redis:
-    highAvailability:
-      enabled: true            # Enable Redis HA
-      replicas: 3
-      volumeClaimTemplate:
-        spec:
-          accessModes: ["ReadWriteOnce"]
-          resources:
-            requests:
-              storage: 5Gi
-  tls:
-    ca:
-      enabled: false            # Enable TLS
+    replicas: 3                # Redis HA enabled
+    persistence:
+      enabled: true            # Persistent storage only for Redis
+      size: 5Gi
+
   rbac:
-    enabled: true              # Enable RBAC
+    policy: "local"            # RBAC management
+
+  tls:
+    selfSignedCertificate:
+      enabled: false           # Disable auto TLS
