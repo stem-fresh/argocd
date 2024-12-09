@@ -13,7 +13,6 @@ spec:
       requests:
         cpu: "250m"
         memory: "256Mi"
-
   repo:
     replicas: 2
     resources:
@@ -23,7 +22,6 @@ spec:
       requests:
         cpu: "250m"
         memory: "256Mi"
-
   controller:
     replicas: 3
     resources:
@@ -33,10 +31,8 @@ spec:
       requests:
         cpu: "250m"
         memory: "256Mi"
-
   redis:
-    replicas: 3
-    resourcePolicy: "keep"  # Ensure Redis pods aren't terminated on deletion
-
+    ha:
+      enabled: true
   rbac:
-    enabled: true  # Enable RBAC for security
+    policy: "local"
