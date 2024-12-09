@@ -1,4 +1,4 @@
-apiVersion: argoproj.io/v1alpha1
+apiVersion: argoproj.io/v1beta1
 kind: ArgoCD
 metadata:
   name: argocd
@@ -16,11 +16,6 @@ spec:
       requests:
         cpu: "250m"
         memory: "256Mi"
-    autoscaling:
-      enabled: true
-      minReplicas: 2
-      maxReplicas: 5
-      targetCPUUtilizationPercentage: 75
 
   repo:
     replicas: 2
@@ -31,13 +26,8 @@ spec:
       requests:
         cpu: "250m"
         memory: "256Mi"
-    autoscaling:
-      enabled: true
-      minReplicas: 2
-      maxReplicas: 4
-      targetCPUUtilizationPercentage: 75
 
-  applicationController:
+  controller:
     replicas: 3
     resources:
       limits:
@@ -46,15 +36,8 @@ spec:
       requests:
         cpu: "250m"
         memory: "256Mi"
-    autoscaling:
-      enabled: true
-      minReplicas: 3
-      maxReplicas: 6
-      targetCPUUtilizationPercentage: 75
 
   redis:
-    ha:
-      enabled: true
     resources:
       limits:
         cpu: "500m"
