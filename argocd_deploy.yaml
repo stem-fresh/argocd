@@ -1,0 +1,67 @@
+apiVersion: argoproj.io/v1beta1
+kind: ArgoCD
+metadata:
+  name: argocd-prod
+  namespace: argocd
+  labels:
+    environment: production
+spec:
+  rbac:
+    policy: |
+      p, role:admin, applications, *, *.*, allow
+      g, admin, role:admin
+  ha:
+    enabled: true
+    redisProxyImage: haproxy
+    redisProxyVersion: "2.0.4"
+    resources:
+      limits:
+        cpu: "1"
+        memory: "2Gi"
+      requests:
+        cpu: "500m"
+        memory: "1Gi"
+
+  # Repo Server
+  repo:
+    replicas: 1
+    volumes:
+      - name: argocd-pv-reposerver
+        persistentVolumeClaim:
+          claimName: argocd-reposerver-storage-pvc
+    volumeMounts:
+      - mountPath: /tmp
+        name: argocd-pv-reposerver
+    initContainers:
+      - name: init-permissions
+        image: busybox
+        command: ["sh", "-c"]
+        args: ["chmod -R 777 /tmp"]
+        volumeMounts:
+          - mountPath: /tmp
+            name: argocd-pv-reposerver
+    resources:
+      limits:
+        cpu: "1"
+        memory: "2Gi"
+      requests:
+        cpu: "500m"
+        memory: "1Gi"
+
+  # API Server
+  server:
+    replicas: 3
+    insecure: true
+    resources:
+      limits:
+        cpu: "1"
+        memory: "2Gi"
+      requests:
+        cpu: "500m"
+        memory: "1Gi"
+    env:
+      - name: ARGOCD_SERVER
+        value: "argocd"
+      - name: ARGOCD_SERVER_BASEHREF
+        value: "/argocd"
+ 
