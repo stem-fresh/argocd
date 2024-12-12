@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: argocd-ingress
+  namespace: argocd
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.org/mergeable-ingress-type: "minion"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: sonar.simplereact.online
+    http:
+      paths:
+      - path: /argocd(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: argocd-prod-server
+            port:
+              number: 80
+
