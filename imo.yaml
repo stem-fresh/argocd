@@ -1,0 +1,8 @@
+
+
+ignoreDifferences:
+  - group: cert-manager.io
+    kind: Certificate
+    jsonPointers:
+      - /status
+      - /metadata/creationTimestamp
